@@ -150,6 +150,9 @@ func _spawn_player(id: int) -> void:
 
 
 func _on_player_out_of_lives() -> void:
+	# Boss 已經被擊破、正在播放爆炸演出時，這一輪算過關，等 Boss 發出 finished。
+	if is_instance_valid(boss) and boss.state == Boss.State.DYING:
+		return
 	for p in players:
 		if is_instance_valid(p) and Game.lives[p.player_id] > 0:
 			return

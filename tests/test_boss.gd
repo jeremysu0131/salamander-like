@@ -381,3 +381,39 @@ func _ensure_game_world_compiled() -> void:
 	var s: GDScript = load("res://scripts/game/game_world.gd")
 	if not s.can_instantiate():
 		s.reload()
+
+
+## 偏離核心中線的滿尺寸環波要打得到核心，不能先被上下的外殼吃掉。
+func test_off_center_ring_hits_core() -> void:
+	var w := await _world()
+	_fake_player(w, Vector2(100, 120))
+	var b := _boss(w)
+	var guard := 0
+	while not b.valves_open and guard < 600:
+		_run(b, DT)
+		guard += 1
+	check(b.valves_open, "valves open")
+	var hp0 := b.hp
+	for offset: float in [6.0, -6.0]:
+		var r: Node2D = load("res://scenes/weapons/ring.tscn").instantiate()
+		r.height = 40.0
+		r.velocity = Vector2(240, 0)
+		r.position = b.global_position + Vector2(-80, offset)
+		w.player_bullets.add_child(r)
+		await physics_frames(30)
+	check_eq(b.hp, hp0 - 2, "both off-center rings hit the core")
+
+
+## 擊破演出中失去最後一條命仍算過關（不會先判定 Game Over）。
+func test_last_life_lost_during_death_show_is_clear() -> void:
+	var w := await _world()
+	_fake_player(w, Vector2(100, 120))
+	var b := _boss(w)
+	w.boss = b
+	b.finished.connect(w._on_boss_finished)
+	b.set_phase2()
+	b.take_hit(b.hp, 0) if b.has_method("take_hit") else b._core_part.take_damage(b.hp, 0)
+	check_eq(b.state, Boss.State.DYING, "dying")
+	Game.lives[0] = 0
+	w._on_player_out_of_lives()
+	check(not w.is_over, "not game over during the death show")

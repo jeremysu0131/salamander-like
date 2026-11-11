@@ -19,6 +19,7 @@ script = ExtResource("1")
 [node name="Effects" type="Node2D" parent="."]
 
 [node name="UI" type="CanvasLayer" parent="."]
+layer = 10
 
 [node name="PauseHandler" type="Node" parent="."]
 script = ExtResource("2")

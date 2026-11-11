@@ -290,9 +290,13 @@ func _update_shield(delta: float) -> void:
 			area.queue_free()
 			_shield_hit()
 		elif area.collision_layer & LAYER_ENEMY and _shield_immunity <= 0.0:
-			# 不對敵人造成傷害（Boss 核心也在 enemy 層）。
 			_shield_immunity = SHIELD_CONTACT_IMMUNITY
 			_shield_hit()
+			# 一般雜兵撞上護盾直接擊毀，否則會繼續衝進判定框。
+			# Boss 的部位與觸手根部不受影響（它們不會移動到機體上）。
+			if area is Enemy and not area is TentacleRoot:
+				var e: Enemy = area
+				e.die(player_id)
 		if shield <= 0:
 			break
 
@@ -366,23 +370,19 @@ func _respawn() -> void:
 	_sprite.visible = true
 
 
-## 復活位置：原地若在地形內，先沿同一條垂直線（同一個 x）上下找最近的空位，
-## 這一欄完全被堵住（例如增生壁）時，再沿同一條水平線（同一個 y）左右找。
-## 「空位」是指機體周圍 12×8 的範圍都沒有地形。都找不到就留在原地（反正有 2 秒無敵）。
+## 復活位置（GDD 4.6）：原地若碰到地形、觸手、Boss 或敵人，就從原地往上下左右同時擴大搜尋，
+## 取最近的空位（同距離時依序：上、下、右、左）。
+## 「空位」是指機體周圍 12×8 的範圍沒有地形、hazard 層與 enemy 層的東西。
+## 都找不到就留在原地（反正有 2 秒無敵）。
 func _find_safe_position(p: Vector2) -> Vector2:
 	if _is_safe(p):
 		return p
-	var min_p := Game.PLAYFIELD.position + HALF_SIZE
-	var max_p := Game.PLAYFIELD.end - HALF_SIZE
-	for d in range(4, int(Game.PLAYFIELD.size.y), 4):
-		for s: int in [-1, 1]:
-			var q := p + Vector2(0, d * s)
-			if q.y >= min_p.y and q.y <= max_p.y and _is_safe(q):
-				return q
+	var area := Rect2(Game.PLAYFIELD.position + HALF_SIZE, Game.PLAYFIELD.size - HALF_SIZE * 2.0)
+	var dirs: Array[Vector2] = [Vector2.UP, Vector2.DOWN, Vector2.RIGHT, Vector2.LEFT]
 	for d in range(4, int(Game.PLAYFIELD.size.x), 4):
-		for s: int in [1, -1]:
-			var q := p + Vector2(d * s, 0)
-			if q.x >= min_p.x and q.x <= max_p.x and _is_safe(q):
+		for dir in dirs:
+			var q := p + dir * d
+			if area.has_point(q) and _is_safe(q):
 				return q
 	return p
 
@@ -390,7 +390,17 @@ func _find_safe_position(p: Vector2) -> Vector2:
 func _is_safe(p: Vector2) -> bool:
 	if Game.world == null or Game.world.stage == null:
 		return true
-	return not Game.world.terrain().is_solid_rect(Rect2(p - Vector2(6, 4), Vector2(12, 8)))
+	if Game.world.terrain().is_solid_rect(Rect2(p - Vector2(6, 4), Vector2(12, 8))):
+		return false
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(12, 8)
+	var q := PhysicsShapeQueryParameters2D.new()
+	q.shape = shape
+	q.transform = Transform2D(0.0, p)
+	q.collide_with_areas = true
+	q.collide_with_bodies = false
+	q.collision_mask = LAYER_ENEMY | LAYER_HAZARD
+	return get_world_2d().direct_space_state.intersect_shape(q, 1).is_empty()
 
 
 func _add_drone() -> void:

@@ -283,12 +283,14 @@ func _build() -> void:
 	# 上下顎之間留比縫隙稍寬的空間，讓瞄準縫隙的子彈不會先被外殼吃掉。
 	var g := GAP_HALF + 1.0
 	_shutter_split = _make_part([Rect2(-12, -12, 24, 12 - g), Rect2(-12, g, 24, 12 - g)])
-	# 核心上下（避開環波最大高度 ±20）與後方的肉、右側肉壁。
-	_armor = _make_part([Rect2(-14, -46, 60, 24), Rect2(-14, 22, 60, 24),
+	# 核心上下與後方的肉、右側肉壁。上下兩塊從核心後緣（x 8）才開始，
+	# 偏離中線的環波（高 40）前緣會先碰到核心，不會被外殼吃掉。
+	_armor = _make_part([Rect2(8, -46, 38, 24), Rect2(8, 22, 38, 24),
 			Rect2(12, -22, 34, 44), Rect2(46, -60, 20, 120)])
 
 	_flash_layer = CanvasLayer.new()
-	_flash_layer.layer = 100
+	# 在遊戲物件之上、UI 層（GameWorld 的 UI 為 layer 10）之下，暫停畫面不會被白閃蓋住。
+	_flash_layer.layer = 5
 	_flash_rect = ColorRect.new()
 	_flash_rect.color = Color(1, 1, 1, 0)
 	_flash_rect.size = Game.SCREEN_SIZE

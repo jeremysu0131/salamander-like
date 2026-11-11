@@ -219,9 +219,10 @@ func test_respawn_moves_out_of_terrain() -> void:
 	check(not p.is_alive(), "died in ceiling")
 	await physics_frames(65)
 	check(p.is_alive(), "respawned")
-	check_near(p.global_position.x, 232, 0.01, "same x")
 	check(not Game.world.terrain().is_solid_rect(p.hitbox_rect()), "moved to open space")
-	check(p.global_position.y > 160, "below the ceiling")
+	# 往右脫出地形約 40 px，比往下（約 64 px）近，所以應該留在同一個 y。
+	check_near(p.global_position.y, 100, 0.01, "nearest open spot is to the right, same y")
+	check(p.global_position.x > 232 and p.global_position.x < 290, "moved right, got %s" % p.global_position.x)
 
 
 func test_out_of_lives() -> void:
@@ -362,3 +363,18 @@ func test_missiles_fire_in_pairs() -> void:
 	check_eq(ys.size(), 2)
 	if ys.size() == 2:
 		check((ys[0] - 110) * (ys[1] - 110) < 0, "one up, one down: %s" % [ys])
+
+
+## 護盾擋下衝撞的雜兵：雜兵被擊毀，機體不死。
+func test_shield_destroys_ramming_enemy() -> void:
+	var p := await _setup()
+	Debug.god = false
+	p.apply_powerup(&"shield")
+	var c: Enemy = load("res://scenes/enemies/charger.tscn").instantiate()
+	c.position = Vector2(392, 110)
+	Game.world.enemies.add_child(c)
+	# 預警 0.5 秒後從畫面右緣以 200 px/s 衝向機體（約 1.7 秒）。
+	await physics_frames(150)
+	check(p.is_alive(), "still alive")
+	check(not is_instance_valid(c) or c.dead, "charger destroyed by the shield")
+	check_eq(p.get_powerup_state().shield, 2, "shield used once")
