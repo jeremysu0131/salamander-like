@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1"]
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+offset_right = 384.0
+offset_bottom = 12.0
+mouse_filter = 2
+script = ExtResource("1")

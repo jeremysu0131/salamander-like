@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=2 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/pixel.fnt" id="1"]
+
+[resource]
+default_font = ExtResource("1")
+default_font_size = 8
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/constants/line_spacing = 0
