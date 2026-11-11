@@ -413,7 +413,8 @@ func test_respawn_safety() -> void:
 			x += CELL
 
 
-## Boss 區：最後 400 px 到 Boss 畫面右緣是平直、開闊、薄天花板與地面的肉壁走廊，沒有固定機關。
+## Boss 區：最後 400 px 到 Boss 背後的肉壁是平直、開闊、薄天花板與地面的肉壁走廊，沒有固定機關；
+## Boss 背後的肉壁加厚，與 Boss 本體（畫面 y 54–174）上下緣相接。
 func test_boss_corridor() -> void:
 	var x0 := data.length - 400.0
 	var c0 := ceil_rows[floori(x0 / CELL)]
@@ -421,10 +422,15 @@ func test_boss_corridor() -> void:
 	check(c0 <= 3 and f0 <= 3, "thin ceiling/floor (%d, %d)" % [c0, f0])
 	check(c0 * CELL >= 12, "ceiling visible below the HUD")
 	check((ROWS - f0 - c0) * CELL >= 160, "roomy arena for the 96×120 boss")
+	var wall_x: float = data.BOSS_WALL_X
 	var x := x0
 	while x < data.length + SCREEN_W:
 		var col := floori(x / CELL)
-		check(ceil_rows[col] == c0 and floor_rows[col] == f0, "flat at x=%d" % x)
+		if x < wall_x:
+			check(ceil_rows[col] == c0 and floor_rows[col] == f0, "flat at x=%d" % x)
+		else:
+			check(ceil_rows[col] * CELL >= 54 and (ROWS - floor_rows[col]) * CELL <= 174,
+					"wall behind the boss meets its body at x=%d" % x)
 		check_eq(flesh[col], 1, "flesh at x=%d" % x)
 		x += CELL
 	for ev in data.spawns:

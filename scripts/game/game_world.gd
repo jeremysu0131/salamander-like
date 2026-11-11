@@ -57,8 +57,6 @@ func _ready() -> void:
 		ui.add_child(_pause_ui)
 	$PauseHandler.process_mode = Node.PROCESS_MODE_ALWAYS
 	$PauseHandler.set_process_unhandled_input(true)
-	if stage.scroll_x >= stage.data.length:
-		_on_stage_end_reached.call_deferred()
 
 
 func _exit_tree() -> void:
@@ -136,7 +134,7 @@ func debug_status() -> String:
 	if players.size() > 0 and is_instance_valid(players[0]):
 		parts.append("pos=(%d,%d)" % [players[0].global_position.x, players[0].global_position.y])
 	if is_instance_valid(boss) and "hp" in boss:
-		parts.append("boss_hp=%d" % boss.hp)
+		parts.append("boss_hp=%d phase=%d" % [boss.hp, boss.phase])
 	return " ".join(parts)
 
 

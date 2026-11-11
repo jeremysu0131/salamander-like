@@ -3,7 +3,10 @@ extends Area2D
 ## 貫穿光束（GDD 4.4、6.2）：一道水平線段，前端以 600 px/s 前進，長度最多 96 px。
 ##
 ## - 剛射出時尾端停在砲口，前端往前伸；長到 96 px 後整道往前飛。
-## - 貫穿敵人：對每個重疊的敵人立刻造成 1 點傷害，之後每 0.2 秒再 1 點。
+## - 貫穿敵人：對每個重疊的敵人立刻造成 1 點傷害，之後每 4 幀再 1 點。
+##   光束掃過 16 px 的目標約 11 幀，所以每道光束約造成 3 點；以每秒約 1.5 道計算，
+##   每個發射源約每秒 5 點，符合 GDD 7.2 的估算。（若照字面每 0.2 秒 1 點，
+##   飛行中的光束掃過目標時只來得及打 1 點，對 Boss 反而比基本彈弱。）
 ## - 被地形擋住：前端停在地形邊緣，尾端繼續前進，光束越來越短直到消失。
 ##   前端抵著地形時每 0.2 秒對前端那一格呼叫一次 Terrain.hit()，用來鑽穿增生壁。
 ##
@@ -12,8 +15,10 @@ extends Area2D
 const SPEED := 600.0
 const MAX_LENGTH := 96.0
 const THICKNESS := 4.0
-## 傷害間隔（物理幀）。0.2 秒 × 60 Hz。
-const TICK_FRAMES := 12
+## 對敵人的傷害間隔（物理幀）。
+const TICK_FRAMES := 4
+## 鑽增生壁的間隔（物理幀）：0.2 秒 × 60 Hz（GDD 6.2）。
+const TERRAIN_TICK_FRAMES := 12
 ## 檢查地形的取樣間距，小於格子大小。
 const SCAN_STEP := 4.0
 
@@ -86,7 +91,7 @@ func _update_terrain(tail: float, head: float) -> void:
 		_block_x = x
 		_tip_cooldown -= 1
 		if _tip_cooldown <= 0:
-			_tip_cooldown = TICK_FRAMES
+			_tip_cooldown = TERRAIN_TICK_FRAMES
 			t.hit(Vector2(x + 1.0, y), damage, player_id)
 	else:
 		# 擋住它的格子被削掉（或捲走）了，繼續前進。

@@ -317,10 +317,19 @@ func test_beam_damage_rate() -> void:
 	Game.world.player_bullets.add_child(beam)
 	await physics_frames(60)
 	var hits: int = target.get("hits")
-	check(hits == 5, "1 damage per 0.2 s over 1 s, got %d" % hits)
+	check(hits == 15, "stationary beam: 1 damage per 4 frames over 1 s, got %d" % hits)
+
+
+## 飛行中的光束掃過 16 px 的目標約造成 3 點（每個發射源約每秒 5 點的依據）。
+func test_beam_damage_per_pass() -> void:
+	await _setup()
+	var target := _dummy(Vector2(240, 110), Vector2(16, 16))
+	var beam: Beam = BEAM_SCENE.instantiate()
+	beam.position = Vector2(100, 110)
+	Game.world.player_bullets.add_child(beam)
 	await physics_frames(60)
-	hits = target.get("hits")
-	check(hits == 10, "10 over 2 s, got %d" % hits)
+	var hits: int = target.get("hits")
+	check(hits == 3, "one pass deals 3, got %d" % hits)
 
 
 func test_beam_blocked_by_terrain() -> void:

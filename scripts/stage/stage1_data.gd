@@ -16,7 +16,8 @@ extends StageData
 ##   D  3200–3700  開闊肉壁，天花板 3、地面 2
 ##   E  3700–5050  窄通道，天花板 8、地面 7 → 通道 y 64–160（96 px，約 45%）
 ##   F  5050–6300  更窄，天花板 8、地面 8 → 通道 y 64–152（88 px，約 40%）；5830–5880 打開
-##   Boss 5880–    平直的薄肉壁走廊（天花板 3、地面 2，沒有起伏），Boss 戰在捲動停在 6300 時開始
+##   Boss 5880–    平直的薄肉壁走廊（天花板 3、地面 2，沒有起伏），Boss 戰在捲動停在 6300 時開始。
+##                 6576 起（Boss 背後）加厚為天花板 7、地面 6，與 Boss 本體上下緣相接
 ## 起伏（rough）1 格：通道最窄時比上面少 16 px，F 段最窄 72 px。
 ##
 ## ── 排關約束（GDD 6.4，tests/test_stage1.gd 自動檢查）──
@@ -35,6 +36,9 @@ const SEGMENTS := {
 	E = Vector2(3700, 5050),
 	F = Vector2(5050, 6300),
 }
+
+## Boss 背後加厚肉壁的起點（世界 x）。捲動停在 6300 時位於畫面 x 276，略早於 Boss 本體左緣（約 288）。
+const BOSS_WALL_X := 6576
 
 ## 自由飛行的事件生成時，玩家大約在世界 x − 這個值的位置。
 const FREE_SPAWN_LEAD := 300.0
@@ -63,7 +67,10 @@ func _init() -> void:
 		{x = 5830, ceil = 8, floor = 8, theme = "flesh", rough = 1},
 		# F 末段與 Boss 區：平直的薄肉壁走廊。
 		{x = 5880, ceil = 3, floor = 2, theme = "flesh"},
-		{x = 6800, ceil = 3, floor = 2, theme = "flesh"},
+		{x = BOSS_WALL_X - 8, ceil = 3, floor = 2, theme = "flesh"},
+		# Boss 背後：肉壁加厚到與 Boss 本體（y 54–174）上下緣相接，玩家不能繞到 Boss 上下方的死角。
+		{x = BOSS_WALL_X, ceil = 7, floor = 6, theme = "flesh"},
+		{x = 6800, ceil = 7, floor = 6, theme = "flesh"},
 	]
 	_segment_a()
 	_segment_b()

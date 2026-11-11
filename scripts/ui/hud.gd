@@ -62,10 +62,11 @@ func _process(_delta: float) -> void:
 
 ## 綁定要顯示強化狀態的玩家節點。需有 powerup_changed 訊號與 get_powerup_state()。
 func bind_player(p: Node) -> void:
-	if is_instance_valid(_player) and _player.powerup_changed.is_connected(_refresh_powerups):
+	if is_instance_valid(_player) and _player.has_signal(&"powerup_changed") \
+			and _player.powerup_changed.is_connected(_refresh_powerups):
 		_player.powerup_changed.disconnect(_refresh_powerups)
 	_player = p
-	if is_instance_valid(p):
+	if is_instance_valid(p) and p.has_signal(&"powerup_changed"):
 		p.powerup_changed.connect(_refresh_powerups)
 	_refresh_powerups()
 
@@ -150,7 +151,7 @@ func _on_hiscore_changed(hiscore: int) -> void:
 
 func _refresh_powerups() -> void:
 	var state := {}
-	if is_instance_valid(_player):
+	if is_instance_valid(_player) and _player.has_method(&"get_powerup_state"):
 		state = _player.get_powerup_state()
 	var speed := _state_int(state, "speed")
 	var drones := _state_int(state, "drones")
