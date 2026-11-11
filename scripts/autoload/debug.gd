@@ -25,6 +25,9 @@ var shot_times: Array[float] = []
 var shot_dir := "user://shots"
 var quit_time := -1.0
 
+## 由測試執行器（tests/run_tests.gd）設為 true。
+var testing := false
+
 ## 遊戲時間（只在 GameWorld 存在且未暫停時累計）。
 var game_time := 0.0
 var _last_log := 0
@@ -50,6 +53,11 @@ func _ready() -> void:
 					shot_times.append(t.to_float())
 			"shotdir": shot_dir = value
 			"quit": quit_time = value.to_float()
+
+
+## 這一輪是否用了開發用參數或在測試中。這種情況下不儲存最高分。
+func is_assisted() -> bool:
+	return testing or god or powered or autopilot or start_x > 0.0
 
 
 func _physics_process(delta: float) -> void:

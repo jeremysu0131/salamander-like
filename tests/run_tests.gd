@@ -18,6 +18,7 @@ func _initialize() -> void:
 func _run() -> void:
 	# 等 autoload 就緒。
 	await process_frame
+	root.get_node("Debug").testing = true
 	var filter := ""
 	var user_args := OS.get_cmdline_user_args()
 	if user_args.size() > 0:

@@ -312,7 +312,7 @@ func test_time_limit_retreat() -> void:
 	b.finished.connect(func(d: bool) -> void: got.append(d))
 	b.elapsed = Boss.TIME_LIMIT - 0.05
 	_run(b, 0.1)
-	check_eq(b.state, Boss.State.RETREAT, "retreats at 150 s")
+	check_eq(b.state, Boss.State.RETREAT, "retreats at the time limit")
 	b._core_part.take_damage(10, 0)
 	b._gap_part.take_damage(10, 0)
 	check_eq(b.hp, 240, "invulnerable while retreating")

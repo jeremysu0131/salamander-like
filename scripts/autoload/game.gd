@@ -84,7 +84,10 @@ func lose_life(player_id: int) -> bool:
 	return lives[player_id] > 0
 
 
+## 用了開發用參數或在測試中時不儲存，以免汙染正式紀錄。
 func save_hiscore() -> void:
+	if Debug.is_assisted():
+		return
 	var cfg := ConfigFile.new()
 	cfg.set_value("score", "hiscore", hiscore)
 	cfg.save(SAVE_PATH)

@@ -12,7 +12,7 @@ extends Node2D
 ##                       phase 2 只剩一條水平縫隙（核心中心 ±GAP_HALF px）打得到。
 ##               phase 2 另外每 STRIKE_INTERVAL 秒從上下緣各伸出 1 條觸手，瞄準玩家當下的 x。
 ##   TRANSITION  HP 降到 120：前瓣膜碎裂，1.5 秒演出，核心無敵。超過的傷害不帶到第二階段。
-##   RETREAT     超過時間上限（150 秒）：縮回肉壁（往右滑出），發出 finished(false)，沒有分數。
+##   RETREAT     超過時間上限（180 秒）：縮回肉壁（往右滑出），發出 finished(false)，沒有分數。
 ##   DYING       擊破：10000 分給擊破者、清掉畫面上的敵彈、核心連續爆炸 2 秒、
 ##               全畫面白閃一次（全遊戲唯一一次，GDD 9.3）、肉壁停止脈動並褪色，然後 finished(true)。
 ##
@@ -42,7 +42,7 @@ const LAYER_HAZARD := 1 << 7
 
 const MAX_HP := 240
 const PHASE2_HP := 120
-const TIME_LIMIT := 150.0
+const TIME_LIMIT := 180.0
 const SCORE := 10000
 
 const BODY_TEXTURE := preload("res://assets/sprites/boss_body.png")
