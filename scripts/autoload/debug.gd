@@ -28,6 +28,7 @@ var quit_time := -1.0
 ## 遊戲時間（只在 GameWorld 存在且未暫停時累計）。
 var game_time := 0.0
 var _last_log := 0
+var _had_world := false
 
 
 func _ready() -> void:
@@ -52,7 +53,14 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if Game.world == null or get_tree().paused:
+	if Game.world == null:
+		# 一輪結束、回到其他畫面後，有指定 --quit 就直接結束，讓自動化執行不會卡在標題畫面。
+		if _had_world and quit_time >= 0.0:
+			print("[end] game_time=%.1f score=%d" % [game_time, Game.scores[0]])
+			get_tree().quit()
+		return
+	_had_world = true
+	if get_tree().paused:
 		return
 	game_time += delta
 	if not shot_times.is_empty() and game_time >= shot_times[0]:

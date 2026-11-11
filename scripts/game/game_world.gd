@@ -88,7 +88,8 @@ func spawn_pickup(type: StringName, pos: Vector2) -> Node2D:
 		return null
 	p.type = type
 	p.position = pos
-	pickups.add_child(p)
+	# 延後加入：道具常在碰撞回呼中生成（子彈打死敵人），那時不能新增 Area2D。
+	pickups.add_child.call_deferred(p)
 	return p
 
 
@@ -181,6 +182,8 @@ func _end(result: StringName, bonus: int, delay: float) -> void:
 		return
 	is_over = true
 	Game.save_hiscore()
+	if Debug.log_state:
+		print("[%s] t=%.1f %s bonus=%d" % [result, Debug.game_time, debug_status(), bonus])
 	await get_tree().create_timer(delay, false).timeout
 	finished.emit(result, bonus)
 

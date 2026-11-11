@@ -97,6 +97,7 @@ func test_red_enemy_damage_score_and_drop() -> void:
 	e.take_damage(1, 0)
 	check(e.dead, "killed")
 	check_eq(Game.scores[0], 200, "charger score")
+	await tree.process_frame  # 道具延後一幀加入（GameWorld.spawn_pickup）
 	check_eq(w.pickups.get_child_count(), 1, "dropped item")
 	if w.pickups.get_child_count() == 1:
 		check_eq(w.pickups.get_child(0).type, &"shield", "drop type")
@@ -144,6 +145,7 @@ func test_formation_all_killed_gives_bonus_and_drop() -> void:
 		if i < 4:
 			check_eq(w.pickups.get_child_count(), 0, "no drop before last")
 	check_eq(Game.scores[0], 5 * 100 + 500, "bonus")
+	await tree.process_frame  # 道具延後一幀加入（GameWorld.spawn_pickup）
 	check_eq(w.pickups.get_child_count(), 1, "drop at last")
 	if w.pickups.get_child_count() == 1:
 		var p: Node2D = w.pickups.get_child(0)
