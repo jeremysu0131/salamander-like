@@ -48,8 +48,9 @@ func physics_frames(n: int) -> void:
 
 
 ## 建立一個完整的 GameWorld（含關卡與玩家），測試結束時自動釋放。
-func make_world() -> GameWorld:
-	var w: GameWorld = load("res://scenes/game/game_world.tscn").instantiate()
+## 回傳型別寫成 Node2D 而非 GameWorld，理由見 run_tests.gd。
+func make_world() -> Node2D:
+	var w: Node2D = load("res://scenes/game/game_world.tscn").instantiate()
 	add(w)
 	await tree.process_frame
 	return w

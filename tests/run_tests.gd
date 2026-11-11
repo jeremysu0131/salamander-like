@@ -40,7 +40,9 @@ func _run_file(path: String) -> void:
 		var name: String = m.name
 		if not name.begins_with("test_"):
 			continue
-		var tc: TestCase = script.new()
+		# 不寫成 TestCase 型別：否則本檔編譯時就會連帶編譯 GameWorld，
+		# 那時 autoload 還沒註冊，會留下編譯失敗的快取。
+		var tc: RefCounted = script.new()
 		tc.tree = self
 		await tc.before_each()
 		await tc.call(name)

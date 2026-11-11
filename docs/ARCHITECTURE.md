@@ -118,6 +118,17 @@ Main (scripts/main.gd)                 畫面流程：標題 → 遊戲 → 結�
 
 關卡資料（`scripts/stage/stage1_data.gd`）的 `spawns` 是依 x 排序的字典陣列：`{x, y, type, ...參數}`。`type` 對應到 `scripts/stage/spawn_registry.gd` 的 `ENTRIES`，其中 `attached` 決定敵人是固定在地形上（世界座標）還是自由飛行（畫面座標）。
 
+| type | 場景 | attached | y 的意義 | 參數 |
+|---|---|---|---|---|
+| `worm_formation` | `scenes/enemies/worm_formation.tscn` | 否 | 正弦波中心線 | `drop`（全滅時最後一隻掉落，並加 500 分）、`amplitude`（振幅，預設 24 px）、`speed`（預設 80 px/s）。游蟲沒有紅色變體 |
+| `spore` | `scenes/enemies/spore.tscn` | 否 | 飄入的高度 | `red`、`drop` |
+| `turret` | `scenes/enemies/turret.tscn` | 是 | 忽略（貼齊該欄地形表面） | `ceiling: bool`（預設 false＝地面）、`red`、`drop` |
+| `charger` | `scenes/enemies/charger.tscn` | 否 | 衝刺的高度 | `red`、`drop`。生成後先在畫面右緣預警 0.5 秒才衝入 |
+| `growth_wall` | `scenes/terrain/growth_wall.tscn` | 是 | 忽略（從天花板表面填到地面表面） | `thickness: int`（格數，預設 6）。x 會對齊到地形格子 |
+| `tentacle` | `scenes/terrain/tentacle.tscn` | 是 | 忽略（根部貼齊表面） | `ceiling: bool`（預設 false）、`length: float`（最長伸出長度 px，省略為通道高度的 60%）、`phase: float`（週期偏移秒數，0–3）、`red`／`drop`（給根部節點） |
+
+Boss 重用觸手的方式（`strike()` 模式）寫在 `scripts/terrain/tentacle.gd` 開頭。
+
 ## 素材清單
 
 精靈圖放在 `assets/sprites/`。所有圖都是橫排幀（hframes），需要紅色變體的敵人在第 2 列（vframes = 2）。

@@ -7,4 +7,10 @@ extends RefCounted
 
 const ENTRIES := {
 	# &"type": {scene = "res://scenes/enemies/xxx.tscn", attached = false},
+	&"worm_formation": {scene = "res://scenes/enemies/worm_formation.tscn", attached = false},
+	&"spore": {scene = "res://scenes/enemies/spore.tscn", attached = false},
+	&"turret": {scene = "res://scenes/enemies/turret.tscn", attached = true},
+	&"charger": {scene = "res://scenes/enemies/charger.tscn", attached = false},
+	&"growth_wall": {scene = "res://scenes/terrain/growth_wall.tscn", attached = true},
+	&"tentacle": {scene = "res://scenes/terrain/tentacle.tscn", attached = true},
 }
