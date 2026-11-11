@@ -90,19 +90,19 @@ func is_solid_rect(screen_rect: Rect2) -> bool:
 
 
 ## 子彈命中檢查：若這個位置是地形則回傳 true（子彈應消失），
-## 可破壞的地形（提供者）會在這裡受到傷害。
-func hit(screen_pos: Vector2, damage := 1) -> bool:
+## 可破壞的地形（提供者）會在這裡受到傷害，得分記給 player_id。
+func hit(screen_pos: Vector2, damage := 1, player_id := 0) -> bool:
 	if _base_solid(screen_pos):
 		return true
 	for p in _providers:
-		if p.hit(screen_pos, damage):
+		if p.hit(screen_pos, damage, player_id):
 			return true
 	return false
 
 
 ## 註冊會變化的地形。提供者必須實作：
 ##   is_solid_at(screen_pos: Vector2) -> bool
-##   hit(screen_pos: Vector2, damage: int) -> bool    命中時回傳 true，並自行扣血
+##   hit(screen_pos: Vector2, damage: int, player_id: int) -> bool    命中時回傳 true，並自行扣血與加分
 ## 提供者離開場景樹時會自動移除。
 func add_provider(provider: Node) -> void:
 	_providers.append(provider)

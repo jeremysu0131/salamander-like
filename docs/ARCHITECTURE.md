@@ -71,9 +71,9 @@ Main (scripts/main.gd)                 畫面流程：標題 → 遊戲 → 結�
 地形碰撞**不走物理引擎**，一律用格子查詢，參數是畫面座標：
 
 - `is_solid_at(pos) -> bool`、`is_solid_rect(rect) -> bool`：玩家、飛彈用來判斷碰撞
-- `hit(pos, damage) -> bool`：子彈每幀呼叫；回傳 true 表示撞到地形，子彈應消失。可破壞的地形在這裡扣血
+- `hit(pos, damage, player_id) -> bool`：子彈每幀呼叫；回傳 true 表示撞到地形，子彈應消失。可破壞的地形在這裡扣血
 - `passage_at(x) -> Vector2(上緣 y, 下緣 y)`：該欄的通道範圍，用來把壁砲、觸手貼齊地形
-- `add_provider(node)`：會變化的地形（增生壁）註冊進來，需實作 `is_solid_at(pos)` 與 `hit(pos, damage)`
+- `add_provider(node)`：會變化的地形（增生壁）註冊進來，需實作 `is_solid_at(pos)` 與 `hit(pos, damage, player_id)`
 
 ## 碰撞層
 
