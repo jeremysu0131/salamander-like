@@ -53,6 +53,7 @@ Main (scripts/main.gd)                 畫面流程：標題 → 遊戲 → 結�
 |---|---|---|
 | `Game` | `scripts/autoload/game.gd` | 分數、殘機、最高分、輸入動作、`Game.world`、`Game.difficulty` |
 | `Sfx` | `scripts/autoload/sfx.gd` | `Sfx.play(&"shoot")`、`Sfx.play(&"pickup")` |
+| `TouchControls` | `scripts/autoload/touch_controls.gd` | 手機觸控：左半邊搖桿、右半邊射擊、右上角暫停，轉成既有的輸入動作 |
 | `Debug` | `scripts/autoload/debug.gd` | 開發用參數：`Debug.god`、`Debug.powered`、`Debug.weapon`、`Debug.autopilot` |
 
 ## GameWorld 提供的函式

@@ -13,8 +13,13 @@ const BACKGROUND := preload("res://assets/sprites/bg_rock.png")
 const BLINK_PERIOD := 1.0
 const BLINK_ON := 0.65
 const CONTROLS := "ARROWS/WASD MOVE  Z/J SHOOT  ESC PAUSE  F11 FULLSCREEN"
+const PROMPT := "PRESS SHOOT TO START"
+## 觸控模式（TouchControls.active）時改顯示的文字。
+const CONTROLS_TOUCH := "HOLD LEFT SIDE: MOVE    HOLD RIGHT SIDE: SHOOT"
+const PROMPT_TOUCH := "TAP TO START"
 
 var _prompt: Label
+var _controls: Label
 var _time := 0.0
 var _started := false
 
@@ -39,14 +44,27 @@ func _ready() -> void:
 	logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(logo)
 
-	_prompt = UiStyle.make_centered_label(self, "PRESS SHOOT TO START", cx, 116, UiStyle.WHITE)
+	_prompt = UiStyle.make_centered_label(self, PROMPT, cx, 116, UiStyle.WHITE)
 
 	var hi := "HI " + UiStyle.format_score(Game.hiscore)
 	var hi_x := cx - UiStyle.text_width(hi) / 2
 	UiStyle.make_label(self, "HI", hi_x, 140, UiStyle.RED)
 	UiStyle.make_label(self, UiStyle.format_score(Game.hiscore), hi_x + 3 * UiStyle.GLYPH_W, 140, UiStyle.CREAM)
 
-	UiStyle.make_centered_label(self, CONTROLS, cx, 196, UiStyle.GREY)
+	_controls = UiStyle.make_centered_label(self, CONTROLS, cx, 196, UiStyle.GREY)
+	TouchControls.active_changed.connect(_apply_touch_mode)
+	_apply_touch_mode(TouchControls.active)
+
+
+func _apply_touch_mode(touch: bool) -> void:
+	var cx := int(Game.SCREEN_SIZE.x) / 2
+	_set_centered(_prompt, PROMPT_TOUCH if touch else PROMPT, cx)
+	_set_centered(_controls, CONTROLS_TOUCH if touch else CONTROLS, cx)
+
+
+func _set_centered(label: Label, text: String, cx: int) -> void:
+	label.text = text
+	label.position.x = cx - UiStyle.text_width(text) / 2
 
 
 func _process(delta: float) -> void:

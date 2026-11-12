@@ -13,6 +13,7 @@ extends Node
 ## --shotdir=<dir>  截圖存放目錄，預設 user://shots
 ## --quit=<t>       遊戲時間第 t 秒結束程式
 ## --log            每秒印出一行狀態（捲動距離、分數、殘機、Boss HP）
+## --touch          一開始就顯示觸控按鈕（在電腦上測試手機操作）
 
 var skip_title := false
 var start_x := 0.0
@@ -21,6 +22,7 @@ var powered := false
 var weapon := &"beam"
 var autopilot := false
 var log_state := false
+var touch := false
 var shot_times: Array[float] = []
 var shot_dir := "user://shots"
 var quit_time := -1.0
@@ -48,6 +50,7 @@ func _ready() -> void:
 			"weapon": weapon = StringName(value)
 			"autopilot": autopilot = true
 			"log": log_state = true
+			"touch": touch = true
 			"shot":
 				for t in value.split(","):
 					shot_times.append(t.to_float())

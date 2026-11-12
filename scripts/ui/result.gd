@@ -52,7 +52,8 @@ func _ready() -> void:
 		UiStyle.make_centered_label(self, "GAME OVER", cx, 72, UiStyle.RED)
 		_add_row("SCORE", score, cx, 104, UiStyle.WHITE)
 
-	_prompt = UiStyle.make_centered_label(self, "PRESS SHOOT", cx, 160, UiStyle.GREY)
+	var prompt := "TAP TO CONTINUE" if TouchControls.active else "PRESS SHOOT"
+	_prompt = UiStyle.make_centered_label(self, prompt, cx, 160, UiStyle.GREY)
 	_prompt.visible = false
 
 

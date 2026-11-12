@@ -19,6 +19,7 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 Debug="*res://scripts/autoload/debug.gd"
 Game="*res://scripts/autoload/game.gd"
 Sfx="*res://scripts/autoload/sfx.gd"
+TouchControls="*res://scripts/autoload/touch_controls.gd"
 
 [display]
 
@@ -27,7 +28,6 @@ window/size/viewport_height=216
 window/size/window_width_override=1152
 window/size/window_height_override=648
 window/stretch/mode="viewport"
-window/stretch/aspect="keep"
 window/stretch/scale_mode="integer"
 
 [layer_names]
@@ -41,17 +41,12 @@ window/stretch/scale_mode="integer"
 2d_physics/layer_7="shield"
 2d_physics/layer_8="hazard"
 
-[physics]
-
-common/physics_ticks_per_second=60
-common/max_physics_steps_per_frame=8
-
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-textures/canvas_textures/default_texture_filter=0
 textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.03, 0.02, 0.06, 1)
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
-environment/defaults/default_clear_color=Color(0.03, 0.02, 0.06, 1)
